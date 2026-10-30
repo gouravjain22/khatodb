@@ -1,0 +1,330 @@
+### ============================================================
+###  Khato API — REST Client test file
+###  Install extension: humao.rest-client
+###  Usage: click "Send Request" above any request block
+### ============================================================
+
+@baseUrl = http://localhost:5000/api/v1
+@contentType = application/json
+
+### -- PASTE real IDs here after creating resources --
+@shopId    = REPLACE_WITH_SHOP_ID
+@customerId = REPLACE_WITH_CUSTOMER_ID
+@productId  = REPLACE_WITH_PRODUCT_ID
+@saleId     = REPLACE_WITH_SALE_ID
+@ownerUserId = 000000000000000000000001
+
+
+# ╔══════════════════════════════╗
+# ║       HEALTH CHECK           ║
+# ╚══════════════════════════════╝
+
+### Health check
+GET http://localhost:5000/health
+
+
+# ╔══════════════════════════════╗
+# ║          SHOPS               ║
+# ╚══════════════════════════════╝
+
+### Create a shop
+# @name createShop
+POST {{baseUrl}}/shops
+Content-Type: {{contentType}}
+
+{
+  "shopName": "Sharma General Store",
+  "ownerUserId": "{{ownerUserId}}",
+  "businessDetails": {
+    "businessType": "kirana",
+    "phone": "9876543210",
+    "email": "sharma@example.com",
+    "address": {
+      "line1": "12, MG Road",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001"
+    }
+  },
+  "legalDetails": {
+    "gstRegistered": false
+  }
+}
+
+###
+
+### Get all shops (paginated)
+GET {{baseUrl}}/shops?page=1&limit=10&sortBy=createdAt&sortOrder=desc
+
+###
+
+### Get all shops — search by name
+GET {{baseUrl}}/shops?search=Sharma&status=active
+
+###
+
+### Get shop by ID
+GET {{baseUrl}}/shops/{{shopId}}
+
+###
+
+### Update shop
+PATCH {{baseUrl}}/shops/{{shopId}}
+Content-Type: {{contentType}}
+
+{
+  "shopName": "Sharma Super Store",
+  "businessDetails": {
+    "phone": "9999999999"
+  }
+}
+
+###
+
+### Delete shop
+DELETE {{baseUrl}}/shops/{{shopId}}
+
+
+# ╔══════════════════════════════╗
+# ║        CUSTOMERS             ║
+# ╚══════════════════════════════╝
+
+### Create a customer
+# @name createCustomer
+POST {{baseUrl}}/customers
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "name": "Ramesh Kumar",
+  "phone": "9123456780",
+  "email": "ramesh@example.com",
+  "address": {
+    "line1": "45, Nehru Nagar",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "pincode": "302002"
+  },
+  "notes": "Regular customer, pays on time"
+}
+
+###
+
+### Get all customers for a shop
+GET {{baseUrl}}/customers?shopId={{shopId}}&page=1&limit=10
+
+###
+
+### Get customers — search by name
+GET {{baseUrl}}/customers?shopId={{shopId}}&search=Ramesh&status=active
+
+###
+
+### Get customer by ID
+GET {{baseUrl}}/customers/{{customerId}}
+
+###
+
+### Update customer
+PATCH {{baseUrl}}/customers/{{customerId}}
+Content-Type: {{contentType}}
+
+{
+  "phone": "9000000001",
+  "status": "active"
+}
+
+###
+
+### Delete customer
+DELETE {{baseUrl}}/customers/{{customerId}}
+
+
+# ╔══════════════════════════════╗
+# ║         PRODUCTS             ║
+# ╚══════════════════════════════╝
+
+### Create a product
+# @name createProduct
+POST {{baseUrl}}/products
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "name": "Tata Salt 1kg",
+  "category": "grocery",
+  "brand": "Tata",
+  "sku": "TATA-SALT-1KG",
+  "purchasePricePaise": 1800,
+  "sellingPricePaise": 2200,
+  "stockQuantity": 100,
+  "lowStockThreshold": 10,
+  "unit": "packet"
+}
+
+###
+
+### Get all products for a shop
+GET {{baseUrl}}/products?shopId={{shopId}}&page=1&limit=10
+
+###
+
+### Get products — filter by category
+GET {{baseUrl}}/products?shopId={{shopId}}&category=grocery&status=active
+
+###
+
+### Get low stock products only
+GET {{baseUrl}}/products?shopId={{shopId}}&lowStockOnly=true
+
+###
+
+### Get product by ID
+GET {{baseUrl}}/products/{{productId}}
+
+###
+
+### Update product (restock)
+PATCH {{baseUrl}}/products/{{productId}}
+Content-Type: {{contentType}}
+
+{
+  "stockQuantity": 200,
+  "sellingPricePaise": 2300
+}
+
+###
+
+### Delete product
+DELETE {{baseUrl}}/products/{{productId}}
+
+
+# ╔══════════════════════════════╗
+# ║           SALES              ║
+# ╚══════════════════════════════╝
+
+### Create a sale (full payment upfront)
+# @name createSale
+POST {{baseUrl}}/sales
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "customerId": "{{customerId}}",
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 3
+    }
+  ],
+  "discountPaise": 100,
+  "paidAmountPaise": 6500,
+  "paymentMethod": "cash",
+  "notes": "Customer paid in full"
+}
+
+###
+
+### Create a sale (partial / udhaar)
+POST {{baseUrl}}/sales
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "customerId": "{{customerId}}",
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 5
+    }
+  ],
+  "discountPaise": 0,
+  "paidAmountPaise": 5000,
+  "paymentMethod": "upi",
+  "notes": "Balance to be paid next week"
+}
+
+###
+
+### Create a sale (unpaid / full udhaar)
+POST {{baseUrl}}/sales
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "customerId": "{{customerId}}",
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 2
+    }
+  ],
+  "notes": "Added to khata"
+}
+
+###
+
+### Get all sales for a shop
+GET {{baseUrl}}/sales?shopId={{shopId}}&page=1&limit=10
+
+###
+
+### Get unpaid / udhaar sales
+GET {{baseUrl}}/sales?shopId={{shopId}}&paymentStatus=unpaid
+
+###
+
+### Get sales for a specific customer
+GET {{baseUrl}}/sales?shopId={{shopId}}&customerId={{customerId}}
+
+###
+
+### Get sale by ID
+GET {{baseUrl}}/sales/{{saleId}}
+
+###
+
+### Cancel a sale (restores stock)
+PATCH {{baseUrl}}/sales/{{saleId}}/cancel
+
+
+# ╔══════════════════════════════╗
+# ║          PAYMENTS            ║
+# ╚══════════════════════════════╝
+
+### Record a payment against a sale (udhaar collection)
+POST {{baseUrl}}/payments
+Content-Type: {{contentType}}
+
+{
+  "saleId": "{{saleId}}",
+  "amountPaise": 3000,
+  "paymentMethod": "cash",
+  "referenceNumber": "",
+  "notes": "Partial payment collected"
+}
+
+###
+
+### Record UPI payment
+POST {{baseUrl}}/payments
+Content-Type: {{contentType}}
+
+{
+  "saleId": "{{saleId}}",
+  "amountPaise": 5000,
+  "paymentMethod": "upi",
+  "referenceNumber": "UPI-TXN-12345",
+  "notes": "PhonePe transfer"
+}
+
+###
+
+### Get all payments for a sale
+GET {{baseUrl}}/payments/by-sale/{{saleId}}
+
+###
+
+### Get all payments for a customer
+GET {{baseUrl}}/payments/by-customer/{{customerId}}?shopId={{shopId}}
+
