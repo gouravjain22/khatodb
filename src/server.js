@@ -17,7 +17,11 @@ const app = express();
 app.use(helmet());
 
 // CORS
-app.use(cors({ origin: env.corsOrigin }));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Rate limiting
 const limiter = rateLimit({
