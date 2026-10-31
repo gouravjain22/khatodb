@@ -11,7 +11,7 @@ const createCustomer = asyncHandler(async (req, res) => {
   const { shopId } = req.body;
 
   // Guard: verify shop exists
-  const shopExists = await Shop.findById(shopId).lean();
+  const shopExists = await Shop.find({ownerUserId:shopId}).lean();
   if (!shopExists) {
     throw new AppError('Shop not found', 404);
   }
