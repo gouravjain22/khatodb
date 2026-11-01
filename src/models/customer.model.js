@@ -35,6 +35,16 @@ const customerSchema = new mongoose.Schema(
       lowercase: true,
       default: '',
     },
+    pending: {
+      type: Number,
+      default: 0,
+      min: [0, 'Pending amount cannot be negative'],
+    },
+    paid: {
+      type: Number,
+      default: 0,
+      min: [0, 'Paid amount cannot be negative'],
+    },
     address: {
       type: customerAddressSchema,
       default: () => ({}),

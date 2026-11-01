@@ -15,6 +15,8 @@ const createCustomerSchema = Joi.object({
   }).default({}),
   notes: Joi.string().trim().allow('').default(''),
   status: Joi.string().valid('active', 'inactive').default('active'),
+  paid: Joi.number().min(0).empty(['', null]).default(0),
+  pending: Joi.number().min(0).empty(['', null]).default(0),
 });
 
 const updateCustomerSchema = Joi.object({
@@ -30,6 +32,8 @@ const updateCustomerSchema = Joi.object({
   }),
   notes: Joi.string().trim().allow(''),
   status: Joi.string().valid('active', 'inactive'),
+  paid: Joi.number().min(0).empty(['', null]).default(0),
+  pending: Joi.number().min(0).empty(['', null]).default(0),
 }).min(1);
 
 const customerIdParamSchema = Joi.object({

@@ -328,3 +328,12 @@ GET {{baseUrl}}/payments/by-sale/{{saleId}}
 ### Get all payments for a customer
 GET {{baseUrl}}/payments/by-customer/{{customerId}}?shopId={{shopId}}
 
+
+# ╔══════════════════════════════╗
+# ║         DASHBOARD            ║
+# ╚══════════════════════════════╝
+
+### Get dashboard summary for shop
+GET {{baseUrl}}/dashboard/summary?shopId={{shopId}}
+
+

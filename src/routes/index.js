@@ -8,5 +8,6 @@ router.use('/products', protect, require('./product.routes'));
 router.use('/customers', protect, require('./customer.routes'));
 router.use('/sales', protect, require('./sale.routes'));
 router.use('/payments', protect, require('./payment.routes'));
+router.use('/dashboard', protect, require('./dashboard.routes'));
 
 module.exports = router;
