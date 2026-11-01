@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.model');
+const Shop = require('../models/shop.model')
 
 const generateToken = (userId) => {
   return jwt.sign(
@@ -14,7 +15,7 @@ const generateToken = (userId) => {
 // REGISTER
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone} = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -49,6 +50,17 @@ const register = async (req, res, next) => {
       name: name.trim(),
       email: normalizedEmail,
       password: hashedPassword,
+      phone:phone
+    });
+
+    await Shop.create({
+      shopName: name.trim(),
+      ownerUserId: user._id,
+      businessDetails: {
+        phone: '1234567890',
+        email: normalizedEmail,
+        phone: phone
+      },
     });
 
     const token = generateToken(user._id);
