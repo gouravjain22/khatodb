@@ -4,6 +4,7 @@ const Customer = require('./customer.model');
 const Sale = require('./sale.model');
 const Payment = require('./payment.model');
 const Counter = require('./counter.model');
+const Expense = require('./expense.model');
 
 module.exports = {
   Shop,
@@ -12,4 +13,6 @@ module.exports = {
   Sale,
   Payment,
   Counter,
+  Expense,
 };
+

@@ -40,9 +40,19 @@ const queryProductsSchema = paginationQuerySchema.keys({
   lowStockOnly: Joi.boolean().default(false),
 });
 
+const queryLowStockSchema = paginationQuerySchema.keys({
+  shopId: objectIdSchema.required().messages({
+    'any.required': 'Shop ID is required',
+  }),
+  category: Joi.string().trim().optional(),
+  brand: Joi.string().trim().optional(),
+});
+
 module.exports = {
   createProductSchema,
   updateProductSchema,
   productIdParamSchema,
   queryProductsSchema,
+  queryLowStockSchema,
 };
+

@@ -12,6 +12,7 @@
 @customerId = REPLACE_WITH_CUSTOMER_ID
 @productId  = REPLACE_WITH_PRODUCT_ID
 @saleId     = REPLACE_WITH_SALE_ID
+@expenseId  = REPLACE_WITH_EXPENSE_ID
 @ownerUserId = 000000000000000000000001
 
 
@@ -335,5 +336,148 @@ GET {{baseUrl}}/payments/by-customer/{{customerId}}?shopId={{shopId}}
 
 ### Get dashboard summary for shop
 GET {{baseUrl}}/dashboard/summary?shopId={{shopId}}
+
+
+# ╔══════════════════════════════╗
+# ║         EXPENSES             ║
+# ╚══════════════════════════════╝
+
+### Create an expense (in paise)
+# @name createExpense
+POST {{baseUrl}}/expenses
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "title": "Shop Electricity Bill",
+  "category": "electricity",
+  "amountPaise": 245000,
+  "expenseDate": "2026-11-04",
+  "paymentMethod": "upi",
+  "notes": "Paid via PhonePe"
+}
+
+###
+
+### Create an expense (in rupees)
+POST {{baseUrl}}/expenses
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "title": "Monthly Shop Rent",
+  "category": "rent",
+  "amount": 15000,
+  "expenseDate": "2026-11-01",
+  "paymentMethod": "bank_transfer",
+  "notes": "November rent"
+}
+
+###
+
+### Get all expenses for shop
+GET {{baseUrl}}/expenses?shopId={{shopId}}&page=1&limit=20
+
+###
+
+### Get expenses filtered by category
+GET {{baseUrl}}/expenses?shopId={{shopId}}&category=electricity
+
+###
+
+### Get single expense by ID
+GET {{baseUrl}}/expenses/{{expenseId}}
+
+###
+
+### Update an expense
+PATCH {{baseUrl}}/expenses/{{expenseId}}
+Content-Type: {{contentType}}
+
+{
+  "notes": "Updated electricity bill receipt"
+}
+
+###
+
+### Delete an expense
+DELETE {{baseUrl}}/expenses/{{expenseId}}
+
+
+# ╔══════════════════════════════╗
+# ║         LOW STOCK            ║
+# ╚══════════════════════════════╝
+
+### Get low stock products (via /products/low-stock)
+GET {{baseUrl}}/products/low-stock?shopId={{shopId}}&page=1&limit=50
+
+###
+
+### Get low stock products (via /inventory/low-stock)
+GET {{baseUrl}}/inventory/low-stock?shopId={{shopId}}
+
+###
+
+### Get low stock products (via query param filter)
+GET {{baseUrl}}/products?shopId={{shopId}}&lowStockOnly=true
+
+
+# ╔══════════════════════════════╗
+# ║         INVOICES             ║
+# ╚══════════════════════════════╝
+
+### Get all invoices for shop
+GET {{baseUrl}}/invoices?shopId={{shopId}}&page=1&limit=20
+
+###
+
+### Get single invoice by ID
+GET {{baseUrl}}/invoices/{{saleId}}
+
+###
+
+### Get invoice by invoice number (e.g. INV-XXXXXX-00001)
+GET {{baseUrl}}/invoices/INV-000001
+
+###
+
+### Generate/create invoice from existing sale
+POST {{baseUrl}}/invoices
+Content-Type: {{contentType}}
+
+{
+  "saleId": "{{saleId}}"
+}
+
+###
+
+### Create invoice with new sale details
+POST {{baseUrl}}/invoices
+Content-Type: {{contentType}}
+
+{
+  "shopId": "{{shopId}}",
+  "customerId": "{{customerId}}",
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 1
+    }
+  ],
+  "paidAmountPaise": 50000,
+  "paymentMethod": "cash",
+  "notes": "Direct counter invoice"
+}
+
+###
+
+### Update non-financial invoice details (e.g. notes)
+PATCH {{baseUrl}}/invoices/{{saleId}}
+Content-Type: {{contentType}}
+
+{
+  "notes": "Customer requested GST breakdown"
+}
+
 
 
